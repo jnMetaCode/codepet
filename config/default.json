@@ -1,0 +1,59 @@
+{
+  "_说明": "码宠默认配置。用户配置会写到 Electron userData/config.json，覆盖这里。",
+
+  "claude": {
+    "enabled": true,
+    "_说明_enabled": "Claude Code 用量采集开关，opt-in。对齐官方 Issue #59081 的隐私期待。",
+    "configDir": "",
+    "_说明_configDir": "留空则自动用 CLAUDE_CONFIG_DIR 或 ~/.claude（Windows 为 %USERPROFILE%\\.claude）"
+  },
+
+  "app": {
+    "autoLaunch": false,
+    "_说明_autoLaunch": "开机自启动（登录时自动打开桌宠）",
+    "onboarded": false,
+    "_说明_onboarded": "是否已完成首次引导（首启自动打开设置 + 欢迎语）"
+  },
+
+  "avatar": {
+    "_说明": "形象模式：sprite=AI 原创宠物立绘+轻动画（v1）。live2d 模式留给 v2，需自备正版授权 Live2D 模型（项目不再内置任何模型）。pet=选哪只宠物（见 config/pets.json）。",
+    "mode": "sprite",
+    "pet": "cat",
+    "live2dModel": ""
+  },
+
+  "git": {
+    "repos": [],
+    "_说明_repos": "要监控的本地 git 仓库目录绝对路径数组。第一版不过滤 author。",
+    "authorFilter": ""
+  },
+
+  "exp": {
+    "_说明": "经验公式权重，可调。优先用 hooks 实时事件（prompt/task/tool）这类有意义指标；无 hooks 时回退 jsonl 计数。token 从不当真值（input_tokens 不可信）。",
+    "perCommit": 10,
+    "perLine": 0.1,
+    "perPrompt": 4,
+    "perTask": 8,
+    "perTool": 1,
+    "perCcRequest": 3,
+    "perCcSession": 5,
+    "levelUpExp": 100
+  },
+
+  "energy": {
+    "_说明": "能量随真实时间衰减，靠当日经验增长补充。参考 ccpet：约 3 天从满到空。",
+    "decayPerDay": 33,
+    "replenishPerExp": 0.5,
+    "lowThreshold": 30
+  },
+
+  "states": {
+    "_说明": "按今日获得经验决定状态。区间下界（含）。",
+    "thresholds": [
+      { "min": 0,   "key": "idle",  "label": "摸鱼", "emoji": "😴" },
+      { "min": 1,   "key": "warm",  "label": "热身", "emoji": "🌱" },
+      { "min": 50,  "key": "active","label": "干劲十足", "emoji": "💪" },
+      { "min": 150, "key": "beast", "label": "卷王", "emoji": "🔥" }
+    ]
+  }
+}

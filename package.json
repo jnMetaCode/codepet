@@ -1,0 +1,59 @@
+{
+  "name": "codepet",
+  "version": "0.1.0",
+  "description": "码宠 CodePet — 你写代码 / 用 Claude Code，它涨经验、升级、换状态的桌面桌宠",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "stats": "node src/main/stats.js",
+    "dev": "electron . --dev",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "dist:mac": "electron-builder --mac",
+    "dist:win": "electron-builder --win"
+  },
+  "author": "AI不止语",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "dependencies": {
+    "pixi-live2d-display": "^0.4.0",
+    "pixi.js": "^7.3.2"
+  },
+  "build": {
+    "appId": "com.aibuzhiyu.codepet",
+    "productName": "CodePet",
+    "copyright": "© AI不止语",
+    "directories": { "output": "release", "buildResources": "build" },
+    "files": [
+      "src/**/*",
+      "config/**/*",
+      "node_modules/**/*",
+      "package.json",
+      "!**/*.map",
+      "!src/renderer/models/**"
+    ],
+    "asar": true,
+    "asarUnpack": [
+      "src/hooks/**/*",
+      "src/renderer/assets/**/*",
+      "src/renderer/vendor/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "identity": null,
+      "target": [{ "target": "dmg", "arch": ["arm64", "x64"] }]
+    },
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    }
+  }
+}

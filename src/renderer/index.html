@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:" />
+  <title>码宠 CodePet</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100%;
+      background: transparent; overflow: hidden;
+      font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+      user-select: none; cursor: default;
+    }
+
+    /* Live2D 画布容器：填满窗口 */
+    #pet { position: absolute; inset: 0; cursor: grab; }
+    #pet:active { cursor: grabbing; }
+    #pet canvas { width: 100%; height: 100%; display: block; }
+
+    /* 说话气泡（叠在上方） */
+    #bubble {
+      position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+      max-width: 280px; padding: 8px 12px;
+      background: rgba(255,255,255,.96); color: #333; border-radius: 14px;
+      font-size: 13px; line-height: 1.4; box-shadow: 0 2px 10px rgba(0,0,0,.18);
+      opacity: 0; transition: opacity .4s; pointer-events: none; text-align: center; z-index: 5;
+    }
+    #bubble.show { opacity: 1; }
+
+    /* 等级/状态徽标（叠在底部） */
+    #badge {
+      position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+      padding: 3px 10px; border-radius: 12px;
+      background: rgba(0,0,0,.6); color: #fff; font-size: 12px; white-space: nowrap;
+      pointer-events: none; z-index: 5;
+    }
+
+    /* 情绪飘字/特效 */
+    .emote {
+      position: absolute; left: 50%; bottom: 40%; z-index: 7; font-size: 30px;
+      pointer-events: none; will-change: transform, opacity;
+      animation: cp-emote 1.5s ease-out forwards;
+    }
+    @keyframes cp-emote {
+      0%   { opacity: 0; transform: translate(calc(-50% + var(--dx,0px)), 12px) scale(.5); }
+      22%  { opacity: 1; transform: translate(calc(-50% + var(--dx,0px)), -6px) scale(1.15); }
+      100% { opacity: 0; transform: translate(calc(-50% + var(--dx,0px) * 1.6), -78px) scale(1); }
+    }
+
+    /* 今日数据面板 */
+    #panel {
+      position: absolute; top: 8px; left: 8px; right: 8px; z-index: 6;
+      background: rgba(20,20,28,.92); color: #eee; border-radius: 12px;
+      padding: 12px 14px; font-size: 12px; line-height: 1.7; display: none;
+    }
+    #panel.show { display: block; }
+    #panel h4 { margin: 0 0 6px; font-size: 13px; }
+    #panel .row { display: flex; justify-content: space-between; }
+    #panel .k { color: #9aa; }
+  </style>
+</head>
+<body>
+  <div id="pet"></div>
+
+  <div id="bubble"></div>
+  <div id="badge">Lv.0 · 加载中</div>
+
+  <div id="panel">
+    <h4>📊 今日数据 <span style="float:right;color:#9aa;font-weight:normal">点我关闭 ✕</span></h4>
+    <div class="row"><span class="k">Git 提交</span><span id="p-commits">-</span></div>
+    <div class="row"><span class="k">增删行数</span><span id="p-lines">-</span></div>
+    <div class="row" id="row-prompts"><span class="k">提问 prompts</span><span id="p-prompts">-</span></div>
+    <div class="row" id="row-tasks"><span class="k">完成任务</span><span id="p-tasks">-</span></div>
+    <div class="row" id="row-tools"><span class="k">工具调用</span><span id="p-tools">-</span></div>
+    <div class="row" id="row-cc"><span class="k">Claude 提问</span><span id="p-cc">-</span></div>
+    <div class="row"><span class="k">会话</span><span id="p-sess">-</span></div>
+    <div class="row"><span class="k">今日经验</span><span id="p-exp">-</span></div>
+    <div class="row"><span class="k">等级</span><span id="p-level">-</span></div>
+  </div>
+
+  <!-- v1 立绘模式：不加载 Live2D 运行库（pixi/cubism）。v2 启用 Live2D 时再按需引入。 -->
+  <script src="growth.js"></script>
+  <script src="live2d.js"></script>
+  <script src="sprite.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>

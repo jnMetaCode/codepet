@@ -1,0 +1,16 @@
+node_modules/
+release/
+dist/
+*.log
+.DS_Store
+
+# 切勿提交任何密钥
+.env
+.env.*
+*.key
+
+# Live2D 闭源运行库（不可在开源仓库重新分发；v2 用户自备）
+src/renderer/vendor/
+
+# 开发期扒来的模型（不可发布）
+src/renderer/models/
