@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: petasset:" />
   <title>码宠 · 设置</title>
   <style>
     :root { color-scheme: light dark; }
@@ -36,7 +36,16 @@
     .pet-cell .face { width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;
                       font-size: 40px; background-size: contain; background-repeat: no-repeat; background-position: center; }
     .pet-cell .nm { font-size: 12px; color: #333; }
-  </style>
+    .pet-cell { position: relative; }
+    .pet-cell .del-pet { position: absolute; top: 2px; right: 4px; border: none; background: transparent;
+                         color: #c33; font-size: 14px; line-height: 1; padding: 2px 4px; cursor: pointer; }
+    .custom-form { display: grid; grid-template-columns: auto 1fr; gap: 8px 10px; align-items: center; margin-bottom: 10px; }
+    .custom-form input[type=text] { padding: 4px 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 12px; }
+    .custom-form input.emoji { width: 48px; text-align: center; }
+    .upload-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .upload-row button { flex: 1; min-width: 130px; }
+    #custom-msg { font-size: 12px; margin: 6px 0 0; min-height: 14px; }
+</style>
 </head>
 <body>
   <h3>码宠 设置</h3>
@@ -58,6 +67,25 @@
     <h4>🐾 选择宠物</h4>
     <p class="hint" style="margin:0 0 10px">选一只你喜欢的。立绘未生成时显示 emoji 占位，生成后自动替换。（仅立绘风格）</p>
     <div id="pet-grid" class="pet-grid"></div>
+  </section>
+
+  <section>
+    <h4>✨ 自定义宠物（上传你自己的）</h4>
+    <p class="hint" style="margin:0 0 10px">
+      传一张图就能做一只专属桌宠。<br>
+      · <b>单张图片</b> → 一只静态宠物（建议透明背景 PNG，正方形最佳）。<br>
+      · <b>九宫格图片</b> → 自动切成 3×3 共 9 帧，做一只<b>会跳舞</b>的宠物。
+    </p>
+    <div class="custom-form">
+      <label for="cp-name">名字</label><input type="text" id="cp-name" placeholder="比如：我家主子" maxlength="12" />
+      <label for="cp-emoji">emoji</label><input type="text" id="cp-emoji" class="emoji" placeholder="🐾" maxlength="4" />
+      <label for="cp-persona">性格</label><input type="text" id="cp-persona" placeholder="比如：高冷小公主" maxlength="12" />
+    </div>
+    <div class="upload-row">
+      <button id="up-single">⬆️ 上传单图（静态）</button>
+      <button id="up-grid">⬆️ 上传九宫格（会跳舞）</button>
+    </div>
+    <p id="custom-msg" class="hint"></p>
   </section>
 
   <section>

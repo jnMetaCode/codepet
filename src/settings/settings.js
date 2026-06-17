@@ -30,26 +30,48 @@ function renderRepos() {
   });
 }
 
+let petList = [];
+
+// 缩略图 URL：内置宠物 assetBase=assets/<id>（设置窗在 ../renderer/ 下）；自定义=petasset://<id>（绝对）。
+function petThumbUrl(p) {
+  const file = p.frames ? 'frame-0.png' : 'character-neutral.png';
+  const base = p.custom ? p.assetBase : `../renderer/${p.assetBase}`;
+  return `${base}/${file}`;
+}
+
 async function renderPetGrid() {
   const grid = $('pet-grid');
-  const list = await window.codepet.getPets();
-  const curPet = (cfg.avatar && cfg.avatar.pet) || (list[0] && list[0].id);
+  petList = await window.codepet.getPets();
+  const curPet = (cfg.avatar && cfg.avatar.pet) || (petList[0] && petList[0].id);
   grid.innerHTML = '';
-  list.forEach((p) => {
+  petList.forEach((p) => {
     const cell = document.createElement('div');
     cell.className = 'pet-cell' + (p.id === curPet ? ' sel' : '');
     const face = document.createElement('div');
     face.className = 'face';
     face.textContent = p.emoji;
-    // 若已生成立绘，用缩略图（相对设置窗路径在 ../renderer/assets）
     const img = new Image();
-    const url = p.frames ? `../renderer/assets/${p.id}/frame-0.png` : `../renderer/assets/${p.id}/character-neutral.png`;
+    const url = petThumbUrl(p);
     img.onload = () => { face.textContent = ''; face.style.backgroundImage = `url("${url}")`; };
     img.src = url;
     const nm = document.createElement('div');
     nm.className = 'nm';
     nm.innerHTML = `${p.name}<br><span style="color:#999;font-size:10px">${p.persona || ''}</span>`;
     cell.appendChild(face); cell.appendChild(nm);
+    if (p.custom) {
+      const del = document.createElement('button');
+      del.className = 'del-pet'; del.textContent = '×'; del.title = '删除这只自定义宠物';
+      del.onclick = async (e) => {
+        e.stopPropagation();
+        if (!confirm(`删除自定义宠物「${p.name}」？`)) return;
+        await window.codepet.deletePet(p.id);
+        if ((cfg.avatar && cfg.avatar.pet) === p.id) {
+          cfg = await window.codepet.setConfig({ avatar: { pet: 'cat' } });
+        }
+        await renderPetGrid();
+      };
+      cell.appendChild(del);
+    }
     cell.onclick = async () => {
       cfg = await window.codepet.setConfig({ avatar: { pet: p.id } });
       grid.querySelectorAll('.pet-cell').forEach((c) => c.classList.remove('sel'));
@@ -58,6 +80,33 @@ async function renderPetGrid() {
     grid.appendChild(cell);
   });
 }
+
+// 上传图片创建自定义宠物：mode = 'single' | 'grid'
+async function uploadCustomPet(mode) {
+  const msg = $('custom-msg');
+  const srcPath = await window.codepet.pickImage();
+  if (!srcPath) return;
+  msg.style.color = '#888';
+  msg.textContent = '处理中…';
+  const res = await window.codepet.createPet({
+    name: $('cp-name').value, emoji: $('cp-emoji').value, persona: $('cp-persona').value,
+    srcPath, mode,
+  });
+  if (!res || !res.ok) {
+    msg.style.color = '#c33';
+    msg.textContent = '✗ ' + ((res && res.error) || '创建失败');
+    return;
+  }
+  // 立即切到新宠物
+  cfg = await window.codepet.setConfig({ avatar: { pet: res.pet.id } });
+  $('cp-name').value = ''; $('cp-emoji').value = ''; $('cp-persona').value = '';
+  await renderPetGrid();
+  msg.style.color = '#2a8';
+  msg.textContent = `✓ 已创建「${res.pet.name}」${res.pet.frames ? '（会跳舞）' : ''}，已切换为当前宠物`;
+}
+
+$('up-single').onclick = () => uploadCustomPet('single');
+$('up-grid').onclick = () => uploadCustomPet('grid');
 
 async function refreshHooks() {
   const st = await window.codepet.hooksStatus();

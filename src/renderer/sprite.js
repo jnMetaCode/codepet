@@ -161,6 +161,8 @@
 
   Sprite.prototype.loadPet = function (pet) {
     if (pet) { this.petId = pet.id; this.petEmoji = pet.emoji || '🐱'; }
+    // 内置宠物 assetBase=assets/<id>（相对本页），自定义宠物=petasset://<id>（绝对）
+    this.assetBase = (pet && pet.assetBase) || `assets/${this.petId}`;
     this._stopFrames();
 
     // 帧动画宠物
@@ -170,7 +172,7 @@
       this._applyExpr(this.cur); // 先占位
       return new Promise((resolve) => {
         for (let k = 0; k < n; k++) {
-          const url = `assets/${this.petId}/frame-${k}.png`;
+          const url = `${this.assetBase}/frame-${k}.png`;
           const img = new Image();
           img.onload = () => { arr[k] = url; if (++done === n) { this.frames = arr.filter(Boolean); this._startFrames(); resolve(); } };
           img.onerror = () => { if (++done === n) { this.frames = arr.filter(Boolean); if (this.frames.length) this._startFrames(); resolve(); } };
@@ -183,7 +185,7 @@
     return new Promise((resolve) => {
       let pending = EXPR.length;
       EXPR.forEach((name) => {
-        const url = `assets/${this.petId}/character-${name}.png`;
+        const url = `${this.assetBase}/character-${name}.png`;
         const img = new Image();
         img.onload = () => {
           this.have[name] = url;

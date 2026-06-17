@@ -184,10 +184,11 @@ setInterval(() => {
 }, 18000);
 
 // 设置变更：热更新配置并立即重算；若换了宠物就热切换形象
-window.codepet.onConfigChanged((c) => {
+window.codepet.onConfigChanged(async (c) => {
   const petChanged = c.avatar && config && config.avatar && c.avatar.pet !== config.avatar.pet;
   config = c;
   if (petChanged && avatar && avatar.loadPet) {
+    pets = await window.codepet.getPets(); // 自定义宠物可能是刚新建的，刷新图鉴再找
     const p = findPet(c.avatar.pet);
     currentPet = p;
     avatar.loadPet(p);

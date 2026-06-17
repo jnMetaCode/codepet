@@ -12,6 +12,10 @@ contextBridge.exposeInMainWorld('codepet', {
   getConfig: () => ipcRenderer.invoke('config:get'),
   setConfig: (partial) => ipcRenderer.invoke('config:set', partial),
   pickDir: () => ipcRenderer.invoke('dialog:pick-dir'),
+  // 自定义宠物
+  pickImage: () => ipcRenderer.invoke('dialog:pick-image'),
+  createPet: (opts) => ipcRenderer.invoke('pets:create', opts),
+  deletePet: (id) => ipcRenderer.invoke('pets:delete', id),
   onConfigChanged: (cb) => ipcRenderer.on('config:changed', (_e, c) => cb(c)),
 
   // Claude Code 实时联动

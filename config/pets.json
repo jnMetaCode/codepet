@@ -1,9 +1,10 @@
 {
-  "_说明": "宠物图鉴（单一数据源）。立绘在 src/renderer/assets/<id>/character-<表情>.png。这批是用户 AI 生成的原创宠物。",
+  "_说明": "宠物图鉴（单一数据源）。立绘在 src/renderer/assets/<id>/character-<表情>.png。这批是用户 AI 生成的原创宠物。desc 字段是给 tools/gen-character.js 的英文外观提示词（喂给 gpt-image-1）。",
   "pets": [
     {
       "id": "cat", "name": "奶猫", "emoji": "🐱",
       "persona": "软萌治愈",
+      "desc": "a fluffy cream-white baby kitten with big round sparkling eyes and tiny soft pink ears",
       "lines": {
         "idle": ["喵～在发呆吗，我陪你 🐾", "软乎乎地等你开工～"],
         "warm": ["一起慢慢来，不急喵", "手感回来啦，加油～"],
@@ -14,6 +15,7 @@
     {
       "id": "mochi", "name": "麻薯", "emoji": "🍡",
       "persona": "软糯黏人",
+      "desc": "a soft squishy round mochi creature, glossy pastel-pink, plump and bouncy with a tiny cute face",
       "lines": {
         "idle": ["黏在你旁边…不许赶我走 🍡", "软软糯糯地想你了～"],
         "warm": ["Q弹起来！一起动～", "戳一戳，开工咯"],
@@ -24,6 +26,7 @@
     {
       "id": "fairy", "name": "棉花精灵", "emoji": "🧚",
       "persona": "梦幻迷糊",
+      "desc": "a dreamy cotton-candy fluff fairy with tiny translucent wings, pastel lavender and white, floating softly",
       "lines": {
         "idle": ["飘呀飘…你在写代码吗～", "迷迷糊糊地守着你 ✨"],
         "warm": ["翅膀扇一扇，给你打气～", "梦里都在帮你想 bug"],
@@ -34,6 +37,7 @@
     {
       "id": "dancer", "name": "小舞精灵", "emoji": "💃",
       "persona": "灵动舞者", "frames": 9, "fps": 5,
+      "desc": "a graceful little dancer sprite in a flowing pastel tutu, tiny sparkly wings, dainty pose mid-twirl",
       "lines": {
         "idle": ["转个圈圈～看我跳舞 💃", "音乐一响我就停不下来～"],
         "warm": ["节奏起来了，一起摇摆～", "脚尖踮起来！"],
@@ -44,11 +48,56 @@
     {
       "id": "rainbow", "name": "彩虹兽", "emoji": "🌈",
       "persona": "元气满满",
+      "desc": "an energetic fluffy creature with soft rainbow pastel fur and a tiny glowing horn, beaming with energy",
       "lines": {
         "idle": ["元气满满，随时出发！🌈", "发个光，提醒你别摸鱼～"],
         "warm": ["冲鸭！彩虹为你加速～", "能量上来啦！"],
         "active": ["超棒！再来一道彩虹！", "你发光我也发光！✨"],
         "beast": ["七彩卷王模式·启动！🌈🔥", "今天闪到我自己都晕了！"]
+      }
+    },
+    {
+      "id": "shiba", "name": "奶狗", "emoji": "🐶",
+      "persona": "热情憨憨",
+      "desc": "a chubby cream-and-tan baby shiba inu puppy with a fluffy curled tail, perky little ears and a happy face",
+      "lines": {
+        "idle": ["汪！主人主人，看这边！🐶", "摇着尾巴等你开工～"],
+        "warm": ["冲冲冲！我陪你一起跑～", "热身好啦，汪呜！"],
+        "active": ["你太棒啦！尾巴都摇飞了！", "写得好顺，奖励我摸摸头嘛～"],
+        "beast": ["卷王主人！汪汪汪超崇拜！🔥", "今天的你，全村最靓的崽！"]
+      }
+    },
+    {
+      "id": "duck", "name": "小黄鸭", "emoji": "🦆",
+      "persona": "解谜搭子",
+      "desc": "a tiny round fluffy yellow duckling with a small orange beak and fuzzy down feathers, curious tilt of the head",
+      "lines": {
+        "idle": ["嘎～卡住了就讲给我听？🦆", "我在听，慢慢说 bug～"],
+        "warm": ["对着我念一遍，思路就通～", "嘎嘎，开始解谜咯"],
+        "active": ["你看！讲着讲着就通了吧！", "这 bug 被你拿下，漂亮！"],
+        "beast": ["卷王！今天的 bug 全跪了！🔥", "嘎——丝滑通关！"]
+      }
+    },
+    {
+      "id": "hamster", "name": "囤囤鼠", "emoji": "🐹",
+      "persona": "囤货吃货",
+      "desc": "a round fluffy golden hamster with puffy stuffed cheeks and tiny paws, sitting and nibbling",
+      "lines": {
+        "idle": ["先囤会儿…你写你的 🐹", "腮帮子塞满，待机中～"],
+        "warm": ["挖出小零食，补能开工～", "囤够啦，动起来！"],
+        "active": ["commit 又 +1，存进腮帮子！", "你产出我囤货，绝配～"],
+        "beast": ["卷王！腮帮子要塞爆啦！", "今天囤了一整个冬天的量！🌰"]
+      }
+    },
+    {
+      "id": "penguin", "name": "企鹅", "emoji": "🐧",
+      "persona": "社畜共情",
+      "desc": "a tiny fluffy baby penguin chick with soft grey-and-white down, little flippers and round feet, waddling",
+      "lines": {
+        "idle": ["又开工啦…打工人互相理解 🐧", "摇摇摆摆陪你上班～"],
+        "warm": ["振作！咱们一点点啃～", "贴一贴，给你回点血"],
+        "active": ["你比我能扛！太强了！", "这进度，老板看了都得哭"],
+        "beast": ["卷王同事！我彻底服了！🔥", "今天 KPI 被你焊死了！"]
       }
     }
   ]

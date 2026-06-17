@@ -2,13 +2,20 @@
  * Electron 主进程：透明无边框置顶桌宠窗 + 托盘 + IPC。
  */
 
-const { app, BrowserWindow, ipcMain, Tray, Menu, nativeImage, screen, dialog, globalShortcut } = require('electron');
+const { app, BrowserWindow, ipcMain, Tray, Menu, nativeImage, screen, dialog, globalShortcut, protocol } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
 const stats = require('./stats');
 const store = require('./store');
 const hooks = require('./hooks');
+const pets = require('./pets');
+
+// 自定义宠物图片用 petasset:// 协议从 userData 读取（打包后 app 内只读，自定义图必须放可写目录）。
+// 必须在 app ready 之前声明 scheme 为特权（standard+secure 才能在页面里 <img>/background 加载）。
+protocol.registerSchemesAsPrivileged([
+  { scheme: 'petasset', privileges: { standard: true, secure: true, supportFetchAPI: true } },
+]);
 
 let win = null;
 let settingsWin = null;
@@ -123,11 +130,12 @@ ipcMain.handle('stats:today', async () => {
   const cfg = store.getConfig();
   return stats.getTodayStats(cfg);
 });
-ipcMain.handle('pets:list', () => {
-  try {
-    return JSON.parse(fs.readFileSync(path.join(__dirname, '../../config/pets.json'), 'utf8')).pets;
-  } catch { return []; }
+ipcMain.handle('pets:list', () => pets.list());
+ipcMain.handle('pets:create', (_e, opts) => {
+  try { return { ok: true, pet: pets.create(opts) }; }
+  catch (e) { return { ok: false, error: e.message }; }
 });
+ipcMain.handle('pets:delete', (_e, id) => pets.remove(id));
 ipcMain.handle('config:get', () => store.getConfig());
 ipcMain.handle('config:set', (_e, partial) => {
   const next = store.setConfig(partial);
@@ -158,6 +166,13 @@ ipcMain.handle('dialog:pick-dir', async () => {
   const r = await dialog.showOpenDialog(settingsWin || win, { properties: ['openDirectory'] });
   return r.canceled || !r.filePaths.length ? null : r.filePaths[0];
 });
+ipcMain.handle('dialog:pick-image', async () => {
+  const r = await dialog.showOpenDialog(settingsWin || win, {
+    properties: ['openFile'],
+    filters: [{ name: '图片', extensions: ['png', 'jpg', 'jpeg', 'webp'] }],
+  });
+  return r.canceled || !r.filePaths.length ? null : r.filePaths[0];
+});
 ipcMain.handle('growth:get', () => store.getGrowth());
 ipcMain.handle('growth:set', (_e, g) => store.setGrowth(g));
 
@@ -172,6 +187,19 @@ ipcMain.on('win:drag', (_e, { dx, dy }) => {
 
 app.whenReady().then(() => {
   store.init(app.getPath('userData'), loadDefaultConfig());
+  pets.init(app.getPath('userData'));
+
+  // 提供自定义宠物图片：petasset://<id>/<file> → userData/pets/<id>/<file>
+  protocol.handle('petasset', async (request) => {
+    try {
+      const u = new URL(request.url);
+      const file = await fs.promises.readFile(pets.resolveAsset(u.hostname, u.pathname.replace(/^\//, '')));
+      return new Response(file, { headers: { 'content-type': 'image/png', 'cache-control': 'no-cache' } });
+    } catch {
+      return new Response('not found', { status: 404 });
+    }
+  });
+
   const cfg0 = store.getConfig();
   if (cfg0.app && cfg0.app.autoLaunch === true) applyAutoLaunch(true);
   createWindow();
