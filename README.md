@@ -101,6 +101,8 @@ node tools/slice-grid.js 你的九宫格.png --inset 12 --debg
 
 设置窗 →「⚡ 实时联动 Claude Code」→ 开启。它会安装一个**安全的 hook**（只记录"发生了什么"，绝不读 prompt 内容），之后你在 Claude Code 里提问/完成任务时，桌宠**即时反应、即时涨经验**。随时可一键卸载，不影响 Claude Code 正常使用。
 
+> 💡 **省钱玩法**：hook 是 Claude Code 这个 CLI 客户端的功能，**跟后端用哪个模型无关**。所以你完全可以把 Claude Code 接到 **DeepSeek** 这类便宜的 Anthropic 兼容端点（设 `ANTHROPIC_BASE_URL` / `ANTHROPIC_AUTH_TOKEN` 指向兼容服务），桌宠照样实时反应——便宜版养成。（具体端点以服务商文档为准。）
+
 ## 打包安装包
 
 ```bash

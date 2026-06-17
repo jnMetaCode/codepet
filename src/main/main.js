@@ -171,12 +171,26 @@ ipcMain.handle('app:set-auto-launch', (_e, on) => {
   return on;
 });
 
+// 桌宠窗是 screen-saver 级置顶，会浮在原生对话框之上、挡住"取消/打开"按钮的点击。
+// 开对话框前临时把它降下来、并把对话框挂到设置窗（模态），关掉后再恢复置顶。
+async function showOpenDialogSafe(opts) {
+  const parent = settingsWin && !settingsWin.isDestroyed() ? settingsWin : win;
+  const wasOnTop = win && !win.isDestroyed() && win.isAlwaysOnTop();
+  if (wasOnTop) win.setAlwaysOnTop(false);
+  if (parent && !parent.isDestroyed()) parent.focus();
+  try {
+    return await dialog.showOpenDialog(parent, opts);
+  } finally {
+    if (wasOnTop && win && !win.isDestroyed()) win.setAlwaysOnTop(true, 'screen-saver');
+  }
+}
+
 ipcMain.handle('dialog:pick-dir', async () => {
-  const r = await dialog.showOpenDialog(settingsWin || win, { properties: ['openDirectory'] });
+  const r = await showOpenDialogSafe({ properties: ['openDirectory'] });
   return r.canceled || !r.filePaths.length ? null : r.filePaths[0];
 });
 ipcMain.handle('dialog:pick-image', async () => {
-  const r = await dialog.showOpenDialog(settingsWin || win, {
+  const r = await showOpenDialogSafe({
     properties: ['openFile'],
     filters: [{ name: '图片', extensions: ['png', 'jpg', 'jpeg', 'webp'] }],
   });
