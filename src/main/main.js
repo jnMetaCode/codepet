@@ -117,9 +117,15 @@ function rebuildTray() {
 }
 
 function createTray() {
-  // 空图标在 Mac 菜单栏看不见，用 setTitle 显示一个可见的 🐾 让用户能点开菜单
-  tray = new Tray(nativeImage.createEmpty());
-  tray.setTitle('🐾');
+  if (process.platform === 'darwin') {
+    // Mac 菜单栏：空图标 + setTitle 显示一个可见的 🐾（emoji 在菜单栏渲染良好）
+    tray = new Tray(nativeImage.createEmpty());
+    tray.setTitle('🐾');
+  } else {
+    // Windows/Linux：系统托盘必须有真实图标，否则不可见、setTitle 也无效 → 用打包进来的图标
+    const ico = nativeImage.createFromPath(path.join(__dirname, '../assets/tray.png'));
+    tray = new Tray(ico.isEmpty() ? nativeImage.createEmpty() : ico);
+  }
   tray.setToolTip('码宠 CodePet');
   rebuildTray();
 }

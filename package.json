@@ -38,6 +38,7 @@
     "asar": true,
     "asarUnpack": [
       "src/hooks/**/*",
+      "src/assets/**/*",
       "src/renderer/assets/**/*",
       "src/renderer/vendor/**/*"
     ],

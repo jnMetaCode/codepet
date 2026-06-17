@@ -105,12 +105,13 @@ node tools/slice-grid.js 你的九宫格.png --inset 12 --debg
 
 ```bash
 node tools/make-icon.js    # 生成 App 图标 build/icon.{png,icns,ico}（默认用奶猫；可传 rainbow 等换一只）
-npm run dist:mac           # 产出 release/ 下的 .dmg
-npm run dist:win           # 产出 .exe（需在 Windows 上构建）
+npm run dist:mac           # 产出 release/ 下的 .dmg（arm64 + x64）
+npm run dist:win           # 产出 release/CodePet Setup x.x.x.exe（NSIS 安装器，x64）
 ```
 
+> **可在 macOS 上交叉打包 Windows .exe**（electron-builder 24 自带 NSIS，无需 Wine）。
 > 图标已随仓库提供（`build/`），electron-builder 自动取用；想换 logo 宠物就重跑 `make-icon.js`。
-> 公开分发需用你自己的 Apple Developer ID 签名+公证，否则 Gatekeeper 会拦截。
+> 安装包未签名：macOS 首开需右键「打开」绕过 Gatekeeper；Windows 会有 SmartScreen 提示（点"更多信息→仍要运行"）。公开分发建议用各自平台的代码签名证书。
 
 ## 成长机制
 
