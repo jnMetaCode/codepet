@@ -6,14 +6,18 @@
 
 ![宠物全家福](docs/pets-showcase.png)
 
-<!-- 演示与界面（请把你录的桌面 GIF / 设置页截图放到 docs/ 后取消下面注释）
-## 演示
+<p align="center">
+  <img src="docs/screenshot-desktop.png" width="230" alt="桌面跳舞" />
+  &nbsp;&nbsp;
+  <img src="docs/screenshot-menu.png" width="230" alt="右键菜单" />
+  &nbsp;&nbsp;
+  <img src="docs/screenshot-settings.png" width="300" alt="设置·选择宠物" />
+</p>
 
+<p align="center"><i>会跳舞的小舞精灵 · 右键换宠物/喂食/数据 · 5 只原创宠物可选</i></p>
+
+<!-- 桌面跳舞 demo GIF 待补：录屏存 docs/demo.gif 后取消注释
 ![桌面效果](docs/demo.gif)
-
-## 设置界面
-
-![设置](docs/settings.png)
 -->
 
 ---
