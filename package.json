@@ -13,7 +13,7 @@
     "dist:win": "electron-builder --win"
   },
   "author": "AI不止语",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "devDependencies": {
     "electron": "^31.0.0",
     "electron-builder": "^24.13.3"
