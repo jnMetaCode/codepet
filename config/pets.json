@@ -57,17 +57,6 @@
       }
     },
     {
-      "id": "shiba", "name": "奶狗", "emoji": "🐶",
-      "persona": "热情憨憨",
-      "desc": "a chubby cream-and-tan baby shiba inu puppy with a fluffy curled tail, perky little ears and a happy face",
-      "lines": {
-        "idle": ["汪！主人主人，看这边！🐶", "摇着尾巴等你开工～"],
-        "warm": ["冲冲冲！我陪你一起跑～", "热身好啦，汪呜！"],
-        "active": ["你太棒啦！尾巴都摇飞了！", "写得好顺，奖励我摸摸头嘛～"],
-        "beast": ["卷王主人！汪汪汪超崇拜！🔥", "今天的你，全村最靓的崽！"]
-      }
-    },
-    {
       "id": "duck", "name": "小黄鸭", "emoji": "🦆",
       "persona": "解谜搭子",
       "desc": "a tiny round fluffy yellow duckling with a small orange beak and fuzzy down feathers, curious tilt of the head",
@@ -79,25 +68,36 @@
       }
     },
     {
-      "id": "hamster", "name": "囤囤鼠", "emoji": "🐹",
-      "persona": "囤货吃货",
-      "desc": "a round fluffy golden hamster with puffy stuffed cheeks and tiny paws, sitting and nibbling",
+      "id": "swordlady", "name": "白衣剑仙", "emoji": "🗡️",
+      "persona": "御剑独舞", "frames": 9, "fps": 5,
+      "desc": "an ancient-Chinese xianxia swordswoman in flowing white-and-gold hanfu, long black hair, performing a sword dance",
       "lines": {
-        "idle": ["先囤会儿…你写你的 🐹", "腮帮子塞满，待机中～"],
-        "warm": ["挖出小零食，补能开工～", "囤够啦，动起来！"],
-        "active": ["commit 又 +1，存进腮帮子！", "你产出我囤货，绝配～"],
-        "beast": ["卷王！腮帮子要塞爆啦！", "今天囤了一整个冬天的量！🌰"]
+        "idle": ["且听风吟，剑未出鞘…", "你写你的，我守一方清静 🗡️"],
+        "warm": ["剑意渐起，与你同行～", "起手式——开工罢"],
+        "active": ["你笔走龙蛇，我剑舞翩跹！", "代码如剑，越使越快～"],
+        "beast": ["剑气纵横三万里！今日卷王是你 🔥", "一舞剑器动四方！"]
       }
     },
     {
-      "id": "penguin", "name": "企鹅", "emoji": "🐧",
-      "persona": "社畜共情",
-      "desc": "a tiny fluffy baby penguin chick with soft grey-and-white down, little flippers and round feet, waddling",
+      "id": "genki", "name": "元气少女", "emoji": "🎀",
+      "persona": "活力满分", "frames": 9, "fps": 5,
+      "desc": "a cheerful chibi anime girl with brown bob hair, yellow sweater and white skirt, energetic dancing poses",
       "lines": {
-        "idle": ["又开工啦…打工人互相理解 🐧", "摇摇摆摆陪你上班～"],
-        "warm": ["振作！咱们一点点啃～", "贴一贴，给你回点血"],
-        "active": ["你比我能扛！太强了！", "这进度，老板看了都得哭"],
-        "beast": ["卷王同事！我彻底服了！🔥", "今天 KPI 被你焊死了！"]
+        "idle": ["哒哒～在等你开工哦 🎀", "今天也要元气满满！"],
+        "warm": ["动起来动起来～", "我先热个身！"],
+        "active": ["你超棒的！给你比个心 💛", "一起加油鸭～"],
+        "beast": ["哇！你今天好厉害！✨", "元气全开，冲鸭！🎀"]
+      }
+    },
+    {
+      "id": "coderdance", "name": "程序媛·舞", "emoji": "💃",
+      "persona": "真人·摇摆", "frames": 9, "fps": 5,
+      "desc": "real-photo programmer girl in a pink hoodie, 9 action frames looping",
+      "lines": {
+        "idle": ["摇一摇，提提神 💃", "工位蹦迪，了解一下？"],
+        "warm": ["节奏起来，跟我扭～", "热个身再写！"],
+        "active": ["你写代码我蹦迪，绝配！", "越写越上头～"],
+        "beast": ["卷王专属庆功舞！🔥", "今天这场，封神！"]
       }
     }
   ]

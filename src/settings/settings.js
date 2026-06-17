@@ -86,6 +86,15 @@ async function uploadCustomPet(mode) {
   const msg = $('custom-msg');
   const srcPath = await window.codepet.pickImage();
   if (!srcPath) return;
+  // 防呆：单图模式下若图接近正方形，多半是九宫格，问一下要不要按九宫格切（避免整张图变成一只静态宠物）
+  if (mode === 'single') {
+    const sz = await window.codepet.imageSize(srcPath);
+    const squareish = sz && sz.width >= 300 && sz.height >= 300 &&
+      Math.abs(sz.width - sz.height) / Math.max(sz.width, sz.height) <= 0.12;
+    if (squareish && confirm('这张图接近正方形，像是九宫格动作图。\n\n确定 = 按【九宫格 → 9 帧会跳舞】切；\n取消 = 就做一张静态宠物。')) {
+      mode = 'grid';
+    }
+  }
   msg.style.color = '#888';
   msg.textContent = '处理中…';
   const res = await window.codepet.createPet({

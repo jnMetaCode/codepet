@@ -142,6 +142,9 @@ ipcMain.handle('pets:create', (_e, opts) => {
   catch (e) { return { ok: false, error: e.message }; }
 });
 ipcMain.handle('pets:delete', (_e, id) => pets.remove(id));
+ipcMain.handle('pets:image-size', (_e, p) => {
+  try { return nativeImage.createFromPath(p).getSize(); } catch { return { width: 0, height: 0 }; }
+});
 ipcMain.handle('config:get', () => store.getConfig());
 ipcMain.handle('config:set', (_e, partial) => {
   const next = store.setConfig(partial);
