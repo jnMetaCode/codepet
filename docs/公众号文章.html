@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>码宠 CodePet · 公众号文章（可直接复制进公众号编辑器）</title>
+</head>
+<!--
+  用法：用浏览器打开本文件 → 全选(⌘A) → 复制(⌘C) → 粘贴进公众号后台编辑器。
+  文字与排版会直接带过去。图片若没自动带过去，就在下面标【请在此插入图片】的位置，
+  用公众号编辑器的"图片"按钮手动插入即可。
+  注：公众号会过滤 <style> 和 class，所以本文所有样式都写成了内联 style=。
+-->
+<body style="margin:0;padding:0;background:#f4f4f6;">
+<div style="max-width:677px;margin:0 auto;padding:24px 18px;background:#ffffff;font-family:-apple-system,'PingFang SC',sans-serif;font-size:16px;line-height:1.8;color:#3f3f3f;letter-spacing:.3px;">
+
+  <h1 style="font-size:23px;line-height:1.5;font-weight:800;color:#1a1a1a;margin:0 0 22px;">别人的 AI 桌宠陪你聊天，我做的这只——你不写代码，它会饿 🐾<br><span style="font-size:15px;color:#9a86c4;font-weight:600;">（已开源 · mac/win 都能装）</span></h1>
+
+  <p style="margin:0 0 16px;">群里随手发了个投票：能不能做个桌宠，读你的 <strong>Git 提交</strong>和 <strong>Claude Code 用量</strong>，你写得多它就升级、换状态？</p>
+
+  <p style="margin:0 0 16px;"><strong style="color:#e8517a;">57.9% 的人选了「有兴趣」</strong>，还有一波人直接点了「有兴趣，想参与！」</p>
+
+  <div style="margin:18px 0;padding:40px 16px;background:#faf7ff;border:1.5px dashed #cbb9e8;border-radius:12px;text-align:center;color:#a99;font-size:14px;">【请在此插入图片：投票截图，高亮 57.9% 那一栏】</div>
+
+  <p style="margin:0 0 16px;">行吧。群里都想要，那我做。</p>
+  <p style="margin:0 0 16px;">几天后，这只——<strong>码宠 CodePet</strong>——就挂在我桌面右下角了。开源，mac 和 win 都能装。</p>
+
+  <div style="margin:18px 0;padding:40px 16px;background:#faf7ff;border:1.5px dashed #cbb9e8;border-radius:12px;text-align:center;color:#a99;font-size:14px;">【请在此插入图片：桌宠在屏幕右下角 + 你在写代码的全屏截图】</div>
+
+  <h2 style="font-size:19px;font-weight:800;color:#1a1a1a;margin:30px 0 14px;padding-left:12px;border-left:4px solid #9a86c4;">它不陪你聊天，它盯着你干活</h2>
+
+  <p style="margin:0 0 16px;">市面上的 AI 桌宠，大多是陪你唠嗑的。这只不一样。</p>
+  <p style="margin:0 0 16px;">你每写一行代码、每跟 Claude Code 完成一个任务，它都看在眼里：涨经验、升级，从「摸鱼 😴」一路进化到「卷王 🔥」。卷到深夜会给你撒花 🎉，<strong>好几天不写，它能量见底，会"饿"</strong>——冒 💤 提醒你。</p>
+
+  <div style="margin:20px 0;padding:16px 18px;background:#fff4f8;border-radius:12px;font-size:17px;font-weight:700;color:#e8517a;text-align:center;">它把你"写代码"这件事，变成了养成游戏。</div>
+
+  <h2 style="font-size:19px;font-weight:800;color:#1a1a1a;margin:30px 0 14px;padding-left:12px;border-left:4px solid #9a86c4;">三个我自己最上头的点</h2>
+
+  <p style="margin:0 0 12px;"><strong>1. 它是"活"的，不是一张静图。</strong></p>
+  <p style="margin:0 0 16px;">会呼吸、会眨眼、踩着自己的影子、时不时自个儿蹦一下。其中几只更绝——平时安静站着，你点它一下、或者你一动代码，它就跳一小段舞，跳完歇下。有张有弛，像个真的小家伙。</p>
+
+  <p style="text-align:center;margin:18px 0;"><img src="../images/白衣剑仙-预览.gif" alt="跳舞" style="max-width:60%;border-radius:12px;" /></p>
+  <p style="text-align:center;font-size:13px;color:#aaa;margin:-8px 0 18px;">↑ 会舞剑的白衣剑仙（也有元气少女跳舞版）</p>
+
+  <p style="margin:0 0 12px;"><strong>2. 它实时懂你在干嘛。</strong></p>
+  <p style="margin:0 0 16px;">通过 Claude Code 的官方 hooks，你每提交一个 prompt、每完成一个任务、每调一次工具，桌宠<strong>当场</strong>就反应、即时涨经验。一个人写代码，旁边有个小家伙陪着卷——这感觉，挺上头的。</p>
+
+  <blockquote style="margin:18px 0;padding:14px 16px;background:#f6f6f8;border-left:4px solid #d0c4ec;border-radius:0 10px 10px 0;color:#5a5a5a;font-size:15px;">小插曲：一开始我想按 token 数算经验。做完才发现 <code style="background:#eee;padding:1px 5px;border-radius:4px;">~/.claude</code> 里的 token 计数根本不准，白忙一晚上。后来改成按"你提交了几次、问了几次、完成几次任务"来算——<strong>反而更稳，也更隐私。</strong></blockquote>
+
+  <p style="margin:0 0 12px;"><strong>3. 隐私守得很死。</strong></p>
+  <p style="margin:0 0 16px;">所有数据只读你本机的 git 和 <code style="background:#eee;padding:1px 5px;border-radius:4px;">~/.claude</code> 用量，<strong>全本地、绝不外传</strong>。而且只统计"发生了多少次"（提交数、提问数、任务数），<strong>从不读你的对话内容、也不读你的代码</strong>。</p>
+  <p style="margin:0 0 16px;">这句话不是我嘴上说说——<strong>开源的，你能逐行去翻。</strong></p>
+
+  <h2 style="font-size:19px;font-weight:800;color:#1a1a1a;margin:30px 0 14px;padding-left:12px;border-left:4px solid #9a86c4;">9 只原创宠物，还能传你自己的图</h2>
+
+  <p style="margin:0 0 14px;">设置里 9 只随你选，点一下即换（正好凑成九宫格）：</p>
+  <p style="margin:0 0 16px;">🐱 奶猫 / 🍡 麻薯 / 🧚 棉花精灵 / 💃 小舞精灵 / 🌈 彩虹兽 / 🦆 小黄鸭 / 🗡️ 白衣剑仙 / 🎀 元气少女 / 💃 程序媛</p>
+
+  <p style="text-align:center;margin:18px 0;"><img src="pets-showcase.png" alt="宠物全家福" style="max-width:100%;border-radius:12px;" /></p>
+
+  <p style="margin:0 0 16px;">最好玩的是——<strong style="color:#e8517a;">你能传自己的图，做专属桌宠。</strong></p>
+  <p style="margin:0 0 16px;">传一张图，就生成一只：单张做静态的，<strong>传个九宫格，它自动切成 9 帧、变成会跳舞的那种。</strong> 把你家猫的照片、自己画的小人、喜欢的角色拖进去，桌面上就多一只独一无二的它。图也全在本地，不外传。</p>
+
+  <blockquote style="margin:18px 0;padding:14px 16px;background:#f6f6f8;border-left:4px solid #d0c4ec;border-radius:0 10px 10px 0;color:#5a5a5a;font-size:15px;">翻车记录：我试过直接把真人办公室照片做成桌宠。结果——桌面上多了个"贴着照片的方块"，丑。所以原创立绘还是得抠成透明背景的，这点别学我。</blockquote>
+
+  <div style="margin:18px 0;padding:40px 16px;background:#faf7ff;border:1.5px dashed #cbb9e8;border-radius:12px;text-align:center;color:#a99;font-size:14px;">【请在此插入图片：自定义上传界面 + 一只用户自传图做的宠物】</div>
+
+  <h2 style="font-size:19px;font-weight:800;color:#1a1a1a;margin:30px 0 14px;padding-left:12px;border-left:4px solid #9a86c4;">从代码到立绘，几乎全是 AI 做的</h2>
+
+  <p style="margin:0 0 16px;">这只桌宠，<strong>从第一行代码到每一只宠物立绘，几乎全是 AI 做的。</strong></p>
+  <p style="margin:0 0 8px;">· 代码：用 Claude Code 从零写——透明窗、数据采集、成长系统、帧动画、打包成安装器，几天搞定。</p>
+  <p style="margin:0 0 16px;">· 形象：每只宠物都是 AI 图像工具生成的原创小动物。</p>
+  <p style="margin:0 0 16px;">这也是我一直在做的事：<strong>把群里冒出来的小创意，用 AI 真做成能用、能发布、能开源的东西。</strong> 这次是大家投票要的，我就做出来了。</p>
+
+  <h2 style="font-size:19px;font-weight:800;color:#1a1a1a;margin:30px 0 14px;padding-left:12px;border-left:4px solid #9a86c4;">怎么用上它</h2>
+
+  <p style="margin:0 0 14px;">两种方式，挑你舒服的：</p>
+  <p style="margin:0 0 14px;"><strong>懒人版</strong>：直接装。mac 下载 <code style="background:#eee;padding:1px 5px;border-radius:4px;">.dmg</code>、win 下载 <code style="background:#eee;padding:1px 5px;border-radius:4px;">.exe</code>，拖进去就能跑。（首次打开系统会拦一下，未签名而已，右键「打开」即可。）</p>
+  <p style="margin:0 0 16px;"><strong>折腾版</strong>：clone 源码改。技术栈特别简单——<strong>原生 JavaScript + Electron</strong>，没 TypeScript、没重框架，<code style="background:#eee;padding:1px 5px;border-radius:4px;">npm install &amp;&amp; npm start</code> 就能跑。</p>
+  <p style="margin:0 0 16px;">装好后，去设置里开「⚡ 实时联动 Claude Code」，它就会即时陪你卷了。</p>
+
+  <div style="margin:18px 0;padding:14px 16px;background:#eefbf3;border-left:4px solid #6cc28d;border-radius:0 10px 10px 0;color:#3a6b4e;font-size:15px;"><strong>省钱小贴士：</strong>Claude Code 的后端模型可以换成 <strong>DeepSeek</strong> 这类便宜的兼容端点（设一下 <code style="background:#dff0e6;padding:1px 5px;border-radius:4px;">ANTHROPIC_BASE_URL</code>）。桌宠靠的是 Claude Code 的 hooks，跟用哪个模型无关——<strong>所以你用便宜模型，它照样实时反应。</strong></div>
+
+  <h2 style="font-size:19px;font-weight:800;color:#1a1a1a;margin:30px 0 14px;padding-left:12px;border-left:4px solid #9a86c4;">开源，欢迎一起共创</h2>
+
+  <p style="margin:0 0 16px;">这本来就是大家投票投出来的项目，当然要一起做大。代码全开源（Apache-2.0）：</p>
+  <p style="margin:0 0 16px;text-align:center;font-size:17px;font-weight:700;color:#9a86c4;">👉 github.com/jnMetaCode/codepet<br><span style="font-size:14px;color:#aaa;font-weight:500;">（喜欢点个 Star ⭐）</span></p>
+
+  <p style="margin:0 0 8px;">想参与，挑你舒服的方式：</p>
+  <p style="margin:0 0 8px;">💡 <strong>有想法</strong>（新宠物、新玩法、新台词、想喂更多数据源）→ 提 issue，或直接 PR；</p>
+  <p style="margin:0 0 8px;">🛠️ <strong>想动手</strong> → <code style="background:#eee;padding:1px 5px;border-radius:4px;">git clone</code> 就能改，上手零门槛；</p>
+  <p style="margin:0 0 16px;">🙋 <strong>想深度参与</strong> → 投票里选了"想参与"的朋友，还有任何感兴趣的同学，<strong>扫码进群，一起把它做下去</strong>。安装包、新版本、共创任务都在群里同步。</p>
+
+  <div style="margin:18px 0;padding:40px 16px;background:#faf7ff;border:1.5px dashed #cbb9e8;border-radius:12px;text-align:center;color:#a99;font-size:14px;">【请在此插入图片：微信群二维码 / 个人微信二维码】</div>
+
+  <p style="margin:0 0 16px;">养只码宠，让它陪你卷。有想法，咱们一起把它做得更好玩。</p>
+
+  <p style="margin:22px 0 0;padding:16px;background:#fff4f8;border-radius:12px;text-align:center;font-size:18px;font-weight:800;color:#e8517a;">喜欢就去点个 Star ⭐<br>也欢迎你一起共创！🐾</p>
+
+  <hr style="border:none;border-top:1px solid #eee;margin:26px 0;" />
+  <p style="margin:0;color:#999;font-size:14px;">「AI不止语」：群里想要什么，我就用 AI 把它做出来——这次，也欢迎你一起做。</p>
+
+</div>
+</body>
+</html>
