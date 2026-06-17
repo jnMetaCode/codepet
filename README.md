@@ -45,7 +45,23 @@
 
 > 设计对齐 Anthropic 官方社区对开发者宠物的隐私期待（claude-code #59081）。
 
-## 快速开始（开发模式）
+## 安装（推荐：直接装客户端）
+
+不用配环境，去 **[Releases](https://github.com/jnMetaCode/codepet/releases)** 下载对应安装包，装上即用：
+
+| 系统 | 下载 |
+|---|---|
+| **macOS · Apple 芯片**（M1/M2/M3/M4） | `CodePet-x.x.x-arm64.dmg` |
+| **macOS · Intel 芯片** | `CodePet-x.x.x.dmg` |
+| **Windows 10/11 (64 位)** | `CodePet Setup x.x.x.exe` |
+
+- **macOS**：打开 `.dmg` → 把 CodePet 拖进「应用程序」→ 首次打开**右键图标→「打开」**（绕过未签名拦截）。  
+  还不行就终端跑：`xattr -dr com.apple.quarantine /Applications/CodePet.app`
+- **Windows**：双击 `.exe` → SmartScreen 提示点「**更多信息 → 仍要运行**」→ 按引导安装。
+
+> 安装包**未做代码签名**，所以首次打开会有安全提示，正常现象。介意的话可自行用 Apple Developer ID / Windows 代码签名证书签名后分发。
+
+## 从源码运行（开发模式）
 
 需要 Node 18+。
 
