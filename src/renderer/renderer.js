@@ -64,10 +64,13 @@ function emoteBurst(texts) {
   texts.forEach((t, i) => setTimeout(() => emote(t, (i - (texts.length - 1) / 2) * 28), i * 100));
 }
 
+let lastStreak = 0;
 function render(settled, stats) {
-  const { state, level, todayExp, totalExp, energy, lowEnergy } = settled;
+  const { state, level, todayExp, totalExp, energy, lowEnergy, streak } = settled;
+  lastStreak = streak || 0;
   const ebar = energy >= 60 ? '⚡' : energy >= 30 ? '🔋' : '🪫';
-  badgeEl.textContent = `Lv.${level} · ${state.emoji}${state.label} · ${ebar}${Math.round(energy)}`;
+  const streakTag = streak > 0 ? ` · 🔥连${streak}天` : '';
+  badgeEl.textContent = `Lv.${level} · ${state.emoji}${state.label} · ${ebar}${Math.round(energy)}${streakTag}`;
 
   document.getElementById('p-commits').textContent = stats.commits;
   document.getElementById('p-lines').textContent = `+${stats.linesAdded} / -${stats.linesDeleted}`;
@@ -89,6 +92,12 @@ function render(settled, stats) {
   document.getElementById('p-level').textContent = `${level}（累计 ${totalExp.toFixed(0)}）`;
 
   lastLowEnergy = lowEnergy;
+  // 连续打卡到了新的一天（里程碑更隆重）
+  if (settled.streakIncreased && streak > 1) {
+    const milestone = [3, 7, 14, 30, 50, 100].includes(streak);
+    say(milestone ? `连续写代码 ${streak} 天！太猛了，给你撒花 🎉🔥` : `连续打卡第 ${streak} 天，继续保持～🔥`, milestone ? 5000 : 3000);
+    if (milestone) { petMotion(['complete', 'wedding']); emoteBurst(['🔥', '✨', '🎉']); } else { emote('🔥'); }
+  }
   if (settled.leveledUp) {
     say(`今天写了 ${stats.linesAdded + stats.linesDeleted} 行、喂了 ${stats.ccRequests} 次 Claude，我升到 ${level} 级啦！🎉`, 5000);
     petMotion(['complete', 'wedding', 'login']);
