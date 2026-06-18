@@ -1,10 +1,11 @@
 {
   "name": "codepet",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "description": "码宠 CodePet — 你写代码 / 用 Claude Code，它涨经验、升级、换状态的桌面桌宠",
   "main": "src/main/main.js",
   "scripts": {
     "start": "electron .",
+    "test": "node --test",
     "stats": "node src/main/stats.js",
     "dev": "electron . --dev",
     "pack": "electron-builder --dir",
