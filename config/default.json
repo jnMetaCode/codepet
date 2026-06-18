@@ -8,6 +8,12 @@
     "_说明_configDir": "留空则自动用 CLAUDE_CONFIG_DIR 或 ~/.claude（Windows 为 %USERPROFILE%\\.claude）"
   },
 
+  "window": {
+    "_说明": "上次桌宠窗口位置（拖动后自动保存）；x/y 为 null 时用屏幕右下角默认位。",
+    "x": null,
+    "y": null
+  },
+
   "app": {
     "autoLaunch": false,
     "_说明_autoLaunch": "开机自启动（登录时自动打开桌宠）",

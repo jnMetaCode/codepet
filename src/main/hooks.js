@@ -11,12 +11,16 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const CLAUDE_DIR = path.join(os.homedir(), '.claude');
-const HOOKS_DIR = path.join(CLAUDE_DIR, 'hooks');
-const RECORDER_DST = path.join(HOOKS_DIR, 'codepet-record.js');
-const SETTINGS = path.join(CLAUDE_DIR, 'settings.json');
-const EVENTS_FILE = path.join(CLAUDE_DIR, 'codepet-events.jsonl');
 const RECORDER_SRC = path.join(__dirname, '../hooks/codepet-record.js');
+
+// 与 stats.js 一致地解析 ~/.claude：配置覆盖 > CLAUDE_CONFIG_DIR > ~/.claude。
+// 用 setConfigDir 注入桌宠设置里的 configDir，保证 install/watch/读事件三处路径一致。
+let _configDir = '';
+function setConfigDir(dir) { _configDir = dir || ''; }
+function claudeDir() { return _configDir || process.env.CLAUDE_CONFIG_DIR || path.join(os.homedir(), '.claude'); }
+function recorderDst() { return path.join(claudeDir(), 'hooks', 'codepet-record.js'); }
+function settingsPath() { return path.join(claudeDir(), 'settings.json'); }
+function eventsFile() { return path.join(claudeDir(), 'codepet-events.jsonl'); }
 
 // 我们要挂的事件（都只旁路记录、不阻断）
 const HOOK_EVENTS = ['SessionStart', 'UserPromptSubmit', 'PreToolUse', 'PostToolUse', 'Stop', 'SessionEnd'];
@@ -24,15 +28,15 @@ const MARK = 'codepet-record'; // 用命令里的这个子串识别"我们加的
 
 function nodeCommand() {
   // 跨平台：node 在 PATH（Claude Code 依赖 node）。引号处理空格路径。
-  return `node "${RECORDER_DST}"`;
+  return `node "${recorderDst()}"`;
 }
 
 function readSettings() {
-  try { return JSON.parse(fs.readFileSync(SETTINGS, 'utf8')); } catch { return {}; }
+  try { return JSON.parse(fs.readFileSync(settingsPath(), 'utf8')); } catch { return {}; }
 }
 function writeSettings(obj) {
-  fs.mkdirSync(CLAUDE_DIR, { recursive: true });
-  fs.writeFileSync(SETTINGS, JSON.stringify(obj, null, 2));
+  fs.mkdirSync(claudeDir(), { recursive: true });
+  fs.writeFileSync(settingsPath(), JSON.stringify(obj, null, 2));
 }
 
 function isOurGroup(group) {
@@ -42,9 +46,10 @@ function isOurGroup(group) {
 
 function install() {
   // 1) 装 recorder 脚本
-  fs.mkdirSync(HOOKS_DIR, { recursive: true });
-  fs.copyFileSync(RECORDER_SRC, RECORDER_DST);
-  try { fs.chmodSync(RECORDER_DST, 0o755); } catch {}
+  const dst = recorderDst();
+  fs.mkdirSync(path.dirname(dst), { recursive: true });
+  fs.copyFileSync(RECORDER_SRC, dst);
+  try { fs.chmodSync(dst, 0o755); } catch {}
 
   // 2) 合并 settings.json
   const s = readSettings();
@@ -71,7 +76,7 @@ function uninstall() {
     if (Object.keys(s.hooks).length === 0) delete s.hooks;
     writeSettings(s);
   }
-  try { fs.unlinkSync(RECORDER_DST); } catch {}
+  try { fs.unlinkSync(recorderDst()); } catch {}
   // 事件历史文件保留（不删，便于继续统计）
   return status();
 }
@@ -84,7 +89,7 @@ function status() {
       if (Array.isArray(s.hooks[ev]) && s.hooks[ev].some(isOurGroup)) { installed = true; break; }
     }
   }
-  return { installed, recorderExists: fs.existsSync(RECORDER_DST), eventsFile: EVENTS_FILE };
+  return { installed, recorderExists: fs.existsSync(recorderDst()), eventsFile: eventsFile() };
 }
 
 // ---------- 事件文件监听（增量） ----------
@@ -92,17 +97,20 @@ function status() {
 let _offset = 0;
 let _watching = false;
 
+let _watchedFile = '';
 function startWatch(onEvent) {
   if (_watching) return;
   _watching = true;
-  try { _offset = fs.statSync(EVENTS_FILE).size; } catch { _offset = 0; }
+  const file = eventsFile();
+  _watchedFile = file;
+  try { _offset = fs.statSync(file).size; } catch { _offset = 0; }
 
-  fs.watchFile(EVENTS_FILE, { interval: 400 }, (curr) => {
+  fs.watchFile(file, { interval: 400 }, (curr) => {
     if (curr.size < _offset) _offset = 0; // 文件被截断/轮换
     if (curr.size <= _offset) return;
     let chunk = '';
     try {
-      const fd = fs.openSync(EVENTS_FILE, 'r');
+      const fd = fs.openSync(file, 'r');
       const buf = Buffer.alloc(curr.size - _offset);
       fs.readSync(fd, buf, 0, buf.length, _offset);
       fs.closeSync(fd);
@@ -117,7 +125,7 @@ function startWatch(onEvent) {
 }
 
 function stopWatch() {
-  if (_watching) { fs.unwatchFile(EVENTS_FILE); _watching = false; }
+  if (_watching) { fs.unwatchFile(_watchedFile); _watching = false; }
 }
 
-module.exports = { install, uninstall, status, startWatch, stopWatch, EVENTS_FILE };
+module.exports = { setConfigDir, install, uninstall, status, startWatch, stopWatch, eventsFile };

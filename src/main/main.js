@@ -33,13 +33,40 @@ function loadDefaultConfig() {
   }
 }
 
-function createWindow() {
+// 上次窗口位置：存在且仍落在某块屏幕的可见范围内才用，否则回到右下角默认位
+function resolveWindowPos() {
   const { workArea } = screen.getPrimaryDisplay();
+  const def = { x: workArea.x + workArea.width - PET_W - 24, y: workArea.y + workArea.height - PET_H - 24 };
+  const saved = store.getConfig().window || {};
+  if (typeof saved.x === 'number' && typeof saved.y === 'number') {
+    const visible = screen.getAllDisplays().some((d) => {
+      const a = d.workArea;
+      // 至少留 60px 在屏内，避免外接屏拔掉后窗口跑到看不见的地方
+      return saved.x >= a.x - PET_W + 60 && saved.x <= a.x + a.width - 60 &&
+             saved.y >= a.y && saved.y <= a.y + a.height - 60;
+    });
+    if (visible) return { x: Math.round(saved.x), y: Math.round(saved.y) };
+  }
+  return def;
+}
+
+let _savePosTimer = null;
+function scheduleSavePos() {
+  clearTimeout(_savePosTimer);
+  _savePosTimer = setTimeout(() => {
+    if (!win || win.isDestroyed()) return;
+    const [x, y] = win.getPosition();
+    store.setConfig({ window: { x, y } });
+  }, 600);
+}
+
+function createWindow() {
+  const pos = resolveWindowPos();
   win = new BrowserWindow({
     width: PET_W,
     height: PET_H,
-    x: workArea.x + workArea.width - PET_W - 24,
-    y: workArea.y + workArea.height - PET_H - 24,
+    x: pos.x,
+    y: pos.y,
     frame: false,
     transparent: true,
     resizable: false,
@@ -63,6 +90,8 @@ function createWindow() {
 
   // 右键桌宠 → 弹出菜单（换宠物/喂食/数据/退出）。最直观的入口。
   win.webContents.on('context-menu', () => popupPetMenu());
+
+  win.on('moved', scheduleSavePos); // 系统拖动结束时记位置
 
   if (process.argv.includes('--dev')) win.webContents.openDevTools({ mode: 'detach' });
 }
@@ -148,6 +177,7 @@ ipcMain.handle('pets:image-size', (_e, p) => {
 ipcMain.handle('config:get', () => store.getConfig());
 ipcMain.handle('config:set', (_e, partial) => {
   const next = store.setConfig(partial);
+  hooks.setConfigDir((next.claude || {}).configDir); // configDir 改了，hooks 路径跟着走
   if (win && !win.isDestroyed()) win.webContents.send('config:changed', next); // 让桌宠热更新
   return next;
 });
@@ -204,6 +234,7 @@ ipcMain.on('win:drag', (_e, { dx, dy }) => {
   if (!win) return;
   const [x, y] = win.getPosition();
   win.setPosition(x + dx, y + dy);
+  scheduleSavePos(); // 自定义拖动也记位置（防抖）
 });
 
 // ---------- 生命周期 ----------
@@ -211,6 +242,7 @@ ipcMain.on('win:drag', (_e, { dx, dy }) => {
 app.whenReady().then(() => {
   store.init(app.getPath('userData'), loadDefaultConfig());
   pets.init(app.getPath('userData'));
+  hooks.setConfigDir((store.getConfig().claude || {}).configDir);
 
   // 提供自定义宠物图片：petasset://<id>/<file> → userData/pets/<id>/<file>
   protocol.handle('petasset', async (request) => {

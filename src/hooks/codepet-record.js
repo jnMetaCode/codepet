@@ -34,7 +34,8 @@ process.stdin.on('end', () => {
       sid: e.session_id || '',
       cwd: e.cwd || '',
     };
-    const dir = path.join(os.homedir(), '.claude');
+    // 与桌宠/ stats.js 统一：优先 CLAUDE_CONFIG_DIR（recorder 由 Claude Code 启动，继承其环境）
+    const dir = process.env.CLAUDE_CONFIG_DIR || path.join(os.homedir(), '.claude');
     try { fs.mkdirSync(dir, { recursive: true }); } catch (_) {}
     fs.appendFileSync(path.join(dir, 'codepet-events.jsonl'), JSON.stringify(rec) + '\n');
   } catch (_) { /* 静默 */ }

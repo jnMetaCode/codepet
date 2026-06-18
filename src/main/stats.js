@@ -206,15 +206,17 @@ async function getTodayStats(config = {}) {
   const todayStart = startOfToday();
   const ccOff = claudeCfg.enabled === false;
 
-  const [git, claude] = await Promise.all([
-    getGitStats(gitCfg.repos, gitCfg.authorFilter),
-    ccOff ? Promise.resolve({ ccRequests: 0, ccSessions: 0, ccOutputTokens: 0 })
-          : getClaudeStats(claudeCfg.configDir),
-  ]);
-
-  // 事件文件（hooks）优先；没有则回退 jsonl 计数
+  // 先读事件文件（单文件，极快）。装了 hooks 时它就是数据源——
+  // 此时 jsonl 算出来的 ccRequests/ccOutputTokens 根本不显示，没必要再全量扫几千个 jsonl。
   const ev = ccOff ? { prompts: 0, tasks: 0, tools: 0, sessions: 0, active: false }
                    : getEventStats(claudeCfg.configDir, todayStart);
+
+  const skipJsonl = ccOff || ev.active;
+  const [git, claude] = await Promise.all([
+    getGitStats(gitCfg.repos, gitCfg.authorFilter),
+    skipJsonl ? Promise.resolve({ ccRequests: 0, ccSessions: 0, ccOutputTokens: 0 })
+              : getClaudeStats(claudeCfg.configDir),
+  ]);
 
   return {
     commits: git.commits,
