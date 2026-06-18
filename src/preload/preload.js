@@ -31,6 +31,10 @@ contextBridge.exposeInMainWorld('codepet', {
   getGrowth: () => ipcRenderer.invoke('growth:get'),
   setGrowth: (g) => ipcRenderer.invoke('growth:set', g),
 
+  // 今日战报卡
+  onReport: (cb) => ipcRenderer.on('ui:report', cb),
+  saveReport: (dataUrl) => ipcRenderer.invoke('report:save', dataUrl),
+
   // 窗口拖动
   dragBy: (dx, dy) => ipcRenderer.send('win:drag', { dx, dy }),
 

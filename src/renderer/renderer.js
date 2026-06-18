@@ -65,9 +65,13 @@ function emoteBurst(texts) {
 }
 
 let lastStreak = 0;
+let lastSettled = null;
+let lastStats = null;
 function render(settled, stats) {
   const { state, level, todayExp, totalExp, energy, lowEnergy, streak } = settled;
   lastStreak = streak || 0;
+  lastSettled = settled;
+  lastStats = stats;
   const ebar = energy >= 60 ? '⚡' : energy >= 30 ? '🔋' : '🪫';
   const streakTag = streak > 0 ? ` · 🔥连${streak}天` : '';
   badgeEl.textContent = `Lv.${level} · ${state.emoji}${state.label} · ${ebar}${Math.round(energy)}${streakTag}`;
@@ -241,6 +245,107 @@ window.codepet.onFeed(async () => {
   say(`喂食成功！+20 经验，今天还能喂 ${quota - 1} 次 🍖`);
   petMotion(['touch_body', 'touch_head', 'complete']);
   emoteBurst(['❤️', '🍖', '✨']);
+});
+
+// ---------- 今日战报分享卡 ----------
+function fmtNum(n) {
+  n = Math.round(n || 0);
+  return n >= 10000 ? (n / 10000).toFixed(1) + 'w' : (n >= 1000 ? (n / 1000).toFixed(1) + 'k' : String(n));
+}
+function loadImage(src) {
+  return new Promise((res) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = src; });
+}
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+}
+
+async function drawReportCard() {
+  const W = 760, H = 1000;
+  const cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  const ctx = cv.getContext('2d');
+  const FONT = '-apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+
+  // 背景渐变
+  const g = ctx.createLinearGradient(0, 0, W, H);
+  g.addColorStop(0, '#FFE7F3'); g.addColorStop(1, '#E6E1FF');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+  const cx = W / 2;
+  ctx.textAlign = 'center';
+
+  // 标题 + 日期
+  const d = new Date();
+  ctx.fillStyle = '#4a3a6a'; ctx.font = `800 46px ${FONT}`;
+  ctx.fillText('码宠 · 今日战报', cx, 84);
+  ctx.fillStyle = '#9a86c4'; ctx.font = `500 24px ${FONT}`;
+  ctx.fillText(`${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`, cx, 122);
+
+  // 宠物立绘（取不到就画 emoji）
+  const base = (currentPet && currentPet.assetBase) || `assets/${(currentPet && currentPet.id) || 'cat'}`;
+  const petSrc = `${base}/${currentPet && currentPet.frames ? 'frame-0.png' : 'character-neutral.png'}`;
+  const im = await loadImage(petSrc);
+  const PS = 300, py = 150;
+  if (im) {
+    const r = Math.min(PS / im.width, PS / im.height);
+    const w = im.width * r, h = im.height * r;
+    ctx.drawImage(im, cx - w / 2, py + (PS - h), w, h);
+  } else {
+    ctx.font = `${PS * 0.7}px ${FONT}`; ctx.fillText((currentPet && currentPet.emoji) || '🐱', cx, py + PS * 0.8);
+  }
+
+  const s = lastSettled || {}; const st = lastStats || {};
+  const state = s.state || { emoji: '🌱', label: '热身' };
+
+  // 等级 + 状态
+  ctx.fillStyle = '#2c2240'; ctx.font = `800 56px ${FONT}`;
+  ctx.fillText(`Lv.${s.level || 0} · ${state.label}${state.emoji}`, cx, 530);
+
+  // streak
+  if (s.streak > 0) {
+    ctx.fillStyle = '#e8517a'; ctx.font = `700 32px ${FONT}`;
+    ctx.fillText(`🔥 连续写代码 ${s.streak} 天`, cx, 580);
+  }
+
+  // 数据行（卡片底框）
+  const rows = [
+    ['今日提交', `${st.commits || 0} 次`],
+    ['增删行数', `+${fmtNum(st.linesAdded)} / -${fmtNum(st.linesDeleted)}`],
+    st.eventsActive ? ['提问 / 完成 / 工具', `${st.prompts || 0} / ${st.tasks || 0} / ${fmtNum(st.tools)}`]
+                    : ['Claude 请求 / 会话', `${st.ccRequests || 0} / ${st.ccSessions || 0}`],
+    ['今日经验', `+${fmtNum(s.todayExp)}`],
+  ];
+  const bx = 90, bw = W - 180, by = 620, rh = 64;
+  ctx.fillStyle = 'rgba(255,255,255,0.55)';
+  roundRect(ctx, bx, by, bw, rh * rows.length + 24, 22); ctx.fill();
+  rows.forEach((row, i) => {
+    const ry = by + 24 + i * rh + rh / 2;
+    ctx.textAlign = 'left'; ctx.fillStyle = '#6a5a8a'; ctx.font = `500 28px ${FONT}`;
+    ctx.fillText(row[0], bx + 34, ry + 9);
+    ctx.textAlign = 'right'; ctx.fillStyle = '#2c2240'; ctx.font = `800 30px ${FONT}`;
+    ctx.fillText(row[1], bx + bw - 34, ry + 9);
+  });
+
+  // 页脚品牌
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#8a7ab0'; ctx.font = `600 26px ${FONT}`;
+  ctx.fillText('你写代码，它陪你卷 🐾', cx, H - 70);
+  ctx.fillStyle = '#a99ac8'; ctx.font = `500 22px ${FONT}`;
+  ctx.fillText('github.com/jnMetaCode/codepet', cx, H - 36);
+
+  return cv.toDataURL('image/png');
+}
+
+window.codepet.onReport(async () => {
+  try {
+    say('生成今日战报中…📸', 2000);
+    const dataUrl = await drawReportCard();
+    const r = await window.codepet.saveReport(dataUrl);
+    if (r && r.ok) { say('战报已存到桌面，也复制到剪贴板啦，去晒一张 🎉', 5000); emoteBurst(['📸', '✨', '🎉']); }
+    else { say('战报生成失败了…' + ((r && r.error) || ''), 4000); }
+  } catch (e) { say('战报生成出错了…'); console.error(e); }
 });
 
 // ---------- 启动 ----------

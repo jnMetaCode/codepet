@@ -2,7 +2,7 @@
  * Electron 主进程：透明无边框置顶桌宠窗 + 托盘 + IPC。
  */
 
-const { app, BrowserWindow, ipcMain, Tray, Menu, nativeImage, screen, dialog, globalShortcut, protocol } = require('electron');
+const { app, BrowserWindow, ipcMain, Tray, Menu, nativeImage, screen, dialog, globalShortcut, protocol, clipboard, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -128,6 +128,7 @@ function menuTemplate() {
     { label: '🐾 换宠物 / 设置…', click: () => openSettings() },
     { label: '🍖 喂食', click: () => win && win.webContents.send('ui:feed') },
     { label: '📊 今日数据', click: () => win && win.webContents.send('ui:show-stats') },
+    { label: '📸 生成今日战报', click: () => win && win.webContents.send('ui:report') },
     { type: 'separator' },
     { label: '点击穿透', type: 'checkbox', checked: clickThrough, click: (m) => setClickThrough(m.checked) },
     { label: '重新加载', click: () => win && win.reload() },
@@ -228,6 +229,24 @@ ipcMain.handle('dialog:pick-image', async () => {
 });
 ipcMain.handle('growth:get', () => store.getGrowth());
 ipcMain.handle('growth:set', (_e, g) => store.setGrowth(g));
+
+// 今日战报：渲染进程画好 canvas 传来 dataURL，这里存桌面 + 复制剪贴板 + 在访达里高亮
+ipcMain.handle('report:save', (_e, dataUrl) => {
+  try {
+    const img = nativeImage.createFromDataURL(dataUrl);
+    if (img.isEmpty()) return { ok: false, error: '图片为空' };
+    clipboard.writeImage(img);
+    const d = new Date();
+    const stamp = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+    let dir; try { dir = app.getPath('desktop'); } catch { dir = app.getPath('downloads'); }
+    const file = path.join(dir, `码宠战报-${stamp}.png`);
+    fs.writeFileSync(file, img.toPNG());
+    shell.showItemInFolder(file);
+    return { ok: true, file };
+  } catch (e) {
+    return { ok: false, error: e.message };
+  }
+});
 
 // 拖动窗口（无边框窗自定义拖动）
 ipcMain.on('win:drag', (_e, { dx, dy }) => {
