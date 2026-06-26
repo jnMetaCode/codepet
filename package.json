@@ -48,6 +48,13 @@
       "identity": null,
       "target": [{ "target": "dmg", "arch": ["arm64", "x64"] }]
     },
+    "dmg": {
+      "contents": [
+        { "x": 130, "y": 200, "type": "file" },
+        { "x": 410, "y": 200, "type": "link", "path": "/Applications" },
+        { "x": 270, "y": 380, "type": "file", "path": "安装助手.command" }
+      ]
+    },
     "win": {
       "target": [{ "target": "nsis", "arch": ["x64"] }]
     },
